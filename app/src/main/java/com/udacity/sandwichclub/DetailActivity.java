@@ -11,10 +11,13 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+    private static final String DEFAULT_EMPTY_TEXT = "No data!";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,32 +65,38 @@ public class DetailActivity extends AppCompatActivity {
         for (String names : sandwich.getAlsoKnownAs()) {
             namesBuilder.append(names + "\n");
         }*/
+        String alsoKnownAsString = listToString(sandwich.getAlsoKnownAs());
+        String ingredientsString = listToString(sandwich.getIngredients());
 
-        StringBuilder namesBuilder = new StringBuilder();
-        for (int i = 0; i < sandwich.getAlsoKnownAs().size(); i++) {
-            namesBuilder.append(sandwich.getAlsoKnownAs().get(i));
-            if ( i != sandwich.getAlsoKnownAs().size()-1) {
-                namesBuilder.append(", ");
-            }
-        }
-
-        StringBuilder ingredientsBuilder = new StringBuilder();
-        for (int i = 0; i < sandwich.getIngredients().size(); i++) {
-            ingredientsBuilder.append(sandwich.getIngredients().get(i));
-            if ( i != sandwich.getIngredients().size()-1) {
-                ingredientsBuilder.append(", ");
-            }
-        }
         TextView alsoKnownAsIv = findViewById(R.id.also_known_tv);
         TextView placeOfOriginIv = findViewById(R.id.origin_tv);
         TextView ingredientsIv = findViewById(R.id.ingredients_tv);
         TextView descriptionIv = findViewById(R.id.description_tv);
 
+        alsoKnownAsIv.setText(checkForEmptyString(alsoKnownAsString));
+        placeOfOriginIv.setText(checkForEmptyString(sandwich.getPlaceOfOrigin()));
+        ingredientsIv.setText(checkForEmptyString(ingredientsString));
+        descriptionIv.setText(checkForEmptyString(sandwich.getDescription()));
 
-        alsoKnownAsIv.setText(namesBuilder.toString());
-        placeOfOriginIv.setText(sandwich.getPlaceOfOrigin());
-        ingredientsIv.setText(ingredientsBuilder.toString());
-        descriptionIv.setText(sandwich.getDescription());
+    }
 
+    private String listToString (List<String> myList) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < myList.size(); i++) {
+            stringBuilder.append(myList.get(i));
+            if ( i != myList.size()-1) {
+                stringBuilder.append(", ");
+            }
+            else stringBuilder.append(".");
+
+        }
+        return stringBuilder.toString();
+    }
+
+    private String checkForEmptyString (String myString){
+        if (myString.equals("")){
+            myString = DEFAULT_EMPTY_TEXT;
+        }
+        return myString;
     }
 }
